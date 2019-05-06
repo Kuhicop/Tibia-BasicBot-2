@@ -7,15 +7,59 @@
 #include <WinAPIProc.au3>
 #include <File.au3>
 
-; SETTINGS:
+; SETTINGS
+Global $character_name = "Legendary Eagle Master"
+
+; Alerts
+Global $alerts = False
+Global $logout = False
+Global $welcome = True
+Global $welcome_time = 30
+
+; Food
+Global $eatfood = True
+Global $food_time = 60
+Global $foodname = "Ham"
+
+; Runemaker
+Global $runemaker = True
+Global $spell = "exura"
+Global $spell_time = 5
+Global $move_blanks = False
+Global $safehouse = False
+Global $housedirection = "{RIGHT}"
+Global $househidedirection = "{LEFT}"
+
+; Cavebot
+Global $cavebot = True
+Global $recording = False
+Global $refillammo = False
+Global $filename = "waypoints\rotworms_edron.txt"
+
+; Targeting
+Global $targeting = True
+Global $atkmode = "Atk" ; Atk, Bal, Def
+Global $chase = False
+Global $mo_amount = 1
+Global $monsters[$mo_amount]
+$monsters[0] = "rotworm"
+;$monsters[1] = "rotwormin"
+
+; Looting
+Global $looting_gold = True
+Global $looting_spears = False
+Global $gold_to_ground = False
+
+#Region setup
+;client
+Global $EXE_full_name = "WATclient-DX9.exe"
+Global $window_name = $character_name & " - WeAreTibia"
+
+;resolution
 $resolutionX = 1920
 $resolutionY = 1080
 
-; Game
-Global $EXE_full_name = "WATclient-DX9.exe"
-Global $window_name = "Legendary Eagle Master - WeAreTibia"
-
-; Coords
+;COORDS
 Global $self[2]
 $self[0] = 875
 $self[1] = 485
@@ -32,58 +76,26 @@ Global $SE[2]
 $SE[0] = 948
 $SE[1] = 555
 
-; Alerts
-Global $alerts = False
-Global $logout = False
-Global $welcome = True
-Global $welcome_time = 30
-
-; Food
-Global $eatfood = True
-Global $food_time = 60
-Global $foodname = "Ham"
+; food
 Global $foodpos[2]
 $foodpos[0] = 1843
 $foodpos[1] = 609
 
-; Runemaker
-Global $runemaker = True
-Global $spell = "exura"
-Global $spell_time = 5
-Global $move_blanks = False
+; runemaker
 Global $DiscardXY[2]
 ; X/Y coords where the completed runes will be thrown
 ; To get your coords check this https://github.com/Kuhicop/Mouse-Coords
 $DiscardXY[0] = 0
 $DiscardXY[1] = 0
-Global $safehouse = False
-Global $housedirection = "{RIGHT}"
-Global $househidedirection = "{LEFT}"
 
-; Cavebot
-Global $cavebot = True
-Global $recording = False
-Global $refillammo = False
-Global $filename = "waypoints\rotworms_edron.txt"
+;cavebot
 Global $trapcount = 20000
 Global $pos[3]
 $pos[0] = 0x98F69C
 $pos[1] = 0x98F6A0
 $pos[2] = 0x98F6A4
 
-; Targeting
-Global $targeting = True
-Global $atkmode = "Atk" ; Atk, Bal, Def
-Global $chase = False
-Global $mo_amount = 1
-Global $monsters[$mo_amount]
-$monsters[0] = "rotworm"
-;$monsters[1] = "rotwormin"
-
-; Looting
-Global $looting_gold = True
-Global $looting_spears = False
-Global $gold_to_ground = True
+; looting
 Global $bpgoldXY[2]
 $bpgoldXY[0] = 1768
 $bpgoldXY[1] = 608
@@ -108,7 +120,6 @@ $lhand[0] = 1763
 $lhand[1] = 354
 Global $houseoutpos[2]
 
-#Region setup
 ; DON'T TOUCH BELOW
 HotkeySet("{END}", "Leave")
 HotkeySet("{HOME}", "StartBotting")
@@ -291,63 +302,6 @@ $m_pos = MouseGetPos()
 FileWriteLine($filename, $m_pos[0] & "|" & $m_pos[1] & "|R")
 EndFunc
 
-Func thereisgold()
-$goldXY = PixelSearch($lootXY[0], $lootXY[1], $lootXY[2], $lootXY[3], 0xf8c810, 1)
-If Not @error Then
-	If $looting_gold Then
-		If $gold_to_ground Then
-			MouseClickDrag("left", $goldXY[0], $goldXY[1], $self[0], $self[1], 5)
-		Else
-			MouseClickDrag("left", $goldXY[0], $goldXY[1], $bpgoldXY[0], $bpgoldXY[1], 5)
-		EndIf
-		Sleep(300)
-		Send("{ENTER}")
-	EndIf
-EndIf
-If find("gold1") Or find("gold2") Or find("gold3") Then
-	If $looting_gold Then
-		If $gold_to_ground Then
-			MouseClickDrag("left", $refXY[0], $refXY[1], $self[0], $self[1], 5)
-		Else
-			MouseClickDrag("left", $refXY[0], $refXY[1], $bpgoldXY[0], $bpgoldXY[1], 5)
-		EndIf
-		Sleep(300)
-		Send("{ENTER}")
-	EndIf
-EndIf
-If find("apple") Then
-	MouseClickDrag("left", $refXY[0], $refXY[1], $bpitemsXY[0], $bpitemsXY[1], 5)
-	Sleep(300)
-EndIf
-If find("npotion") Then
-	MouseClickDrag("left", $refXY[0], $refXY[1], $bpitemsXY[0], $bpitemsXY[1], 5)
-	Sleep(300)
-EndIf
-If find("npotion2") Then
-	MouseClickDrag("left", $refXY[0], $refXY[1], $bpitemsXY[0], $bpitemsXY[1], 5)
-	Sleep(300)
-EndIf
-If $looting_spears Then
-	If FindArea("spear", $lootXY[0], $lootXY[1], $lootXY[2], $lootXY[3]) Then
-		MouseClickDrag("left", $refXY[0], $refXY[1], $lhand[0], $lhand[1], 5)
-		Sleep(300)
-	EndIf
-EndIf
-feat(False)
-If find("bag") Then
-	Sleep(100)
-	MouseClick("right", $refXY[0], $refXY[1], 1, 5)
-	Sleep(100)
-	If $looting_spears Then
-		If FindArea("spear", $lootXY[0], $lootXY[1], $lootXY[2], $lootXY[3]) Then
-			MouseClickDrag("left", $refXY[0], $refXY[1], $lhand[0], $lhand[1], 5)
-			Sleep(300)
-		EndIf
-	EndIf
-	feat(False)
-EndIf
-EndFunc
-
 Func find($image)
 $image = "img\" & $image & ".png"
 If _FindImage($image, $refXY[0], $refXY[1]) Then
@@ -426,6 +380,66 @@ Else
 EndIf
 EndFunc
 
+Func thereisgold()
+$goldXY = PixelSearch($lootXY[0], $lootXY[1], $lootXY[2], $lootXY[3], 0xf8c810, 1)
+If Not @error Then
+	If $looting_gold Then
+		If $gold_to_ground Then
+			MouseClickDrag("left", $goldXY[0], $goldXY[1], $self[0], $self[1], 5)
+		Else
+			MouseClickDrag("left", $goldXY[0], $goldXY[1], $bpgoldXY[0], $bpgoldXY[1], 5)
+		EndIf
+		Sleep(300)
+		Send("{ENTER}")
+	EndIf
+EndIf
+If $looting_gold Then
+	If find("gold1") Or find("gold2") Or find("gold3") Then
+		If $gold_to_ground Then
+			MouseClickDrag("left", $refXY[0], $refXY[1], $self[0], $self[1], 5)
+		Else
+			MouseClickDrag("left", $refXY[0], $refXY[1], $bpgoldXY[0], $bpgoldXY[1], 5)
+		EndIf
+		Sleep(300)
+		Send("{ENTER}")
+	EndIf
+EndIf
+If find("apple") Then
+	MouseClickDrag("left", $refXY[0], $refXY[1], $bpitemsXY[0], $bpitemsXY[1], 5)
+	Sleep(300)
+EndIf
+If find("npotion") Then
+	MouseClickDrag("left", $refXY[0], $refXY[1], $bpitemsXY[0], $bpitemsXY[1], 5)
+	Sleep(300)
+EndIf
+If find("npotion2") Then
+	MouseClickDrag("left", $refXY[0], $refXY[1], $bpitemsXY[0], $bpitemsXY[1], 5)
+	Sleep(300)
+EndIf
+If $looting_spears Then
+	If FindArea("spear", $lootXY[0], $lootXY[1], $lootXY[2], $lootXY[3]) Then
+		MouseClickDrag("left", $refXY[0], $refXY[1], $lhand[0], $lhand[1], 5)
+		Sleep(300)
+	EndIf
+EndIf
+feat(False)
+If find("bag") Then
+	Sleep(100)
+	MouseClick("right", $refXY[0], $refXY[1], 1, 5)
+	Sleep(100)
+	If $looting_spears Then
+		If FindArea("spear", $lootXY[0], $lootXY[1], $lootXY[2], $lootXY[3]) Then
+			MouseClickDrag("left", $refXY[0], $refXY[1], $lhand[0], $lhand[1], 5)
+			Sleep(300)
+		EndIf
+	EndIf
+	feat(False)
+EndIf
+If find("100gold") Or find("100plat") Then
+	MouseClick("right", $refXY[0], $refXY[1], 1, 5)
+EndIf
+EndFunc
+
 Func falerts()
 If $alerts Then
 	If NOT find("battle_list") Then
@@ -496,7 +510,7 @@ Func ftargeting()
 If $targeting Then
 	While Not find("battle_list")
 		$mo_i = 0
-		While ($mo_i <= $mo_amount)
+		While ($mo_i < $mo_amount)
 			$monster_name = $monsters[$mo_i]
 			$mo_i = $mo_i + 1
 			If $refillammo Then
@@ -511,7 +525,7 @@ If $targeting Then
 			If find("\monsters\" & $monster_name) Then
 				MouseClick("left", $refXY[0], $refXY[1], 1, 1)
 				MouseMove($self[0], $self[1], 1)
-				While find("monsters\" & $monster_name & "_attack")
+				While find("monsters\" & $monster_name & "_attack") ; and pixel(attacking_red_color)
 					If $atkmode = "Atk" Then
 						If find("atk") Then
 							MouseClick("left", $refXY[0], $refXY[1], 1, 1)
@@ -539,6 +553,8 @@ If $targeting Then
 						$attacking = True
 						$openlootXY[0] = $pixelq[0]
 						$openlootXY[1] = $pixelq[1]
+					Else
+						ExitLoop
 					EndIf
 					Sleep(500)
 				WEnd
