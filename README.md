@@ -1,5 +1,3 @@
 # Legendary Eagle
 
-- pixel(attacking_red_color)
-
-- 100gold
+BasicBot used for my knight, i'm too lazy to merge both gits.
