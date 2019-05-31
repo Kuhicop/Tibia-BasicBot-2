@@ -8,8 +8,6 @@
 #include <File.au3>
 
 ; SETTINGS
-Global $character_name = "Legendary Eagle Master"
-
 ; Alerts
 Global $alerts = False
 Global $logout = False
@@ -52,8 +50,8 @@ Global $gold_to_ground = False
 
 #Region setup
 ;client
-Global $EXE_full_name = "WATclient-DX9.exe"
-Global $window_name = $character_name & " - WeAreTibia"
+Global $EXE_full_name = "client.exe"
+Global $window_name = "client_name"
 
 ;resolution
 $resolutionX = 1920
